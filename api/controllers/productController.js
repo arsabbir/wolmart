@@ -27,7 +27,7 @@ export const getAllProduct = asyncHandler(async (req, res) => {
   if (products.length === 0) {
     return res.status(404).json({ message: "User data not found" });
   }
-  res.status(200).json(products);
+  res.status(200).json({products});
 });
 
 /**

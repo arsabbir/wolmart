@@ -11,7 +11,12 @@ import {
   getAllRoles,
   getAllUsers,
 } from "./features/user/userApiSlice.js";
-import { getAllBrands } from "./features/product/productApiSlice.js";
+import {
+  getAllBrands,
+  getAllCategory,
+  getAllProduct,
+  getAllTags,
+} from "./features/product/productApiSlice.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,6 +32,9 @@ function App() {
     dispatch(getAllRoles());
     dispatch(getAllUsers());
     dispatch(getAllBrands());
+    dispatch(getAllTags());
+    dispatch(getAllCategory());
+    dispatch(getAllProduct());
   }, [dispatch]);
 
   return (

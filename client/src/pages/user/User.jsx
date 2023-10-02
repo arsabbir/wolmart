@@ -20,7 +20,6 @@ import swal from "sweetalert";
 const User = () => {
   const dispatch = useDispatch();
   const { error, message, user, role } = useSelector(getAllPermissionData);
-  console.log(message);
 
   const { input, setInput, resetForm, hanldeInputChange } = useFormFields({
     name: "",

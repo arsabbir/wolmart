@@ -6,10 +6,10 @@ import { timeAgo } from "../../helper/helper.js";
 import useFormFields from "../../hooks/useFormFields.js";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createBrand,
-  deleteBrand,
-  updateBrand,
-  updateStatusBrand,
+  createTag,
+  deleteTag,
+  updateTag,
+  updateStatusTag,
 } from "../../features/product/productApiSlice.js";
 
 import { createToast } from "../../utils/toast.js";
@@ -20,60 +20,34 @@ import {
   setMessageEmpty,
 } from "../../features/product/productSlice.js";
 
-const Brand = () => {
-
-  // useState Section 
-  const [logo, setLogo] = useState(null);
-  const [logoPreview, setLogoPreview] = useState(null);
-  const [logoUP, setLogoUp] = useState(null);
-  const [logoUPPreview, setLogoUpPreview] = useState(null);
-
+const Tag = () => {
+  // useState Section
   const dispatch = useDispatch();
-  const { error, message, brand, loader } = useSelector(getAllProductData);
-  const [brandEdit, setBrandEdit] = useState({});
+  const { error, message, tag, loader } = useSelector(getAllProductData);
+  const [tagEdit, setTagEdit] = useState({});
   const { input, setInput, resetForm, hanldeInputChange } = useFormFields({
     name: "",
   });
- const [search,setSearch] = useState(null)
+  const [search, setSearch] = useState(null);
 
-
-// handler section
-
-  // hanleLogoPreview
-  const handleLogoPreview = (e) => {
-    setLogo(e.target.files[0]);
-    setLogoPreview(URL.createObjectURL(e.target.files[0]));
-  };
-
-  // user create submitbrandhanldeFileChange
-  const brandHandleSubmit = (e) => {
+  // user create submittaghanldeFileChange
+  const tagHandleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", input.name);
-    formData.append("brand-photo", logo);
-    dispatch(createBrand(formData));
+    dispatch(createTag(input));
     resetForm();
-  };
-// hanlde update file change
-  const hanldeUpdateFileChange = (e) => {
-    console.log(e.target.files[0]);
-    setLogoUp(e.target.files[0]);
-    setLogoUpPreview(URL.createObjectURL(e.target.files[0]));
   };
 
   // handle role edit
-  const handleEditBrand = (id) => {
-    const editData = brand.find((data) => data._id == id);
-    setBrandEdit(editData);
+  const handleEditTag = (id) => {
+    const editData = tag.find((data) => data._id == id);
+    setTagEdit(editData);
   };
 
-  // hanldeBrandUpdateSubmit
-  const brandHandleUpdateSubmit = (e) => {
+  // hanldeTagUpdateSubmit
+  const tagHandleUpdateSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", brandEdit.name);
-    formData.append("brand-photo", logoUP);
-    dispatch(updateBrand({ data: formData, id: brandEdit._id }));
+    const data = { id: tagEdit._id, tagData: tagEdit };
+    dispatch(updateTag(data));
   };
 
   // handle status update
@@ -86,7 +60,7 @@ const Brand = () => {
       dangerMode: true,
     }).then((willUpdate) => {
       if (willUpdate) {
-        dispatch(updateStatusBrand({ status, id }));
+        dispatch(updateStatusTag({ status, id }));
       } else {
         swal("Your imaginary file is safe!");
       }
@@ -94,7 +68,7 @@ const Brand = () => {
   };
 
   // user delete hanlde
-  const brandHandleDelete = (id) => {
+  const tagHandleDelete = (id) => {
     swal({
       title: "Sure",
       text: "Are you sure you want to delete",
@@ -103,16 +77,16 @@ const Brand = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        dispatch(deleteBrand(id));
+        dispatch(deleteTag(id));
       } else {
         swal("Your imaginary file is safe!");
       }
     });
   };
-// hanlde Brand Edit Change
-  const hanldeBrandEditChange = (e) => {
+  // hanlde Tag Edit Change
+  const hanldeTagEditChange = (e) => {
     e.preventDefault();
-    setBrandEdit((prevState) => ({
+    setTagEdit((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
@@ -120,10 +94,10 @@ const Brand = () => {
 
   // search handler
   const handleSearch = (value) => {
-    setSearch(value)
-  }
+    setSearch(value);
+  };
 
-// dispatch section 
+  // dispatch section
   useEffect(() => {
     if (error) {
       createToast(error);
@@ -133,23 +107,9 @@ const Brand = () => {
       createToast(message, "success");
       dispatch(setMessageEmpty());
     }
-  }, [error, message, brand, dispatch]);
+  }, [error, message, tag, dispatch]);
 
   const cols = [
-    {
-      name: "Brand Logo",
-      selector: (row) => (
-        <img
-          style={{
-            width: "50px",
-            height: "50px",
-            margin: "10px",
-            objectFit: "cover",
-          }}
-          src={row.photo}
-        />
-      ),
-    },
     {
       name: "Name",
       selector: (row) => row.name,
@@ -191,13 +151,13 @@ const Brand = () => {
           <button
             className="btn btn-warning mr-1 btn-sm"
             data-toggle="modal"
-            data-target="#brandEditModal"
-            onClick={() => handleEditBrand(row._id)}
+            data-target="#tagEditModal"
+            onClick={() => handleEditTag(row._id)}
           >
             <i className="fa fa-edit"></i>
           </button>
           <button
-            onClick={() => brandHandleDelete(row._id)}
+            onClick={() => tagHandleDelete(row._id)}
             className="btn btn-danger  btn-sm"
           >
             <i className="fa fa-trash"></i>
@@ -210,10 +170,10 @@ const Brand = () => {
   return (
     <>
       <div className="page-header">
-        <PageHeader title="Brands" />
+        <PageHeader title="Tags" />
       </div>
-      <ModalPopup target="brandModalPopup">
-        <form onSubmit={brandHandleSubmit}>
+      <ModalPopup target="tagModalPopup">
+        <form onSubmit={tagHandleSubmit}>
           <div className="my-3">
             <label htmlFor="">Name</label>
             <input
@@ -224,70 +184,29 @@ const Brand = () => {
               onChange={hanldeInputChange}
             />
           </div>
-          <div className="my-3">
-            <label htmlFor="">Photo</label>
-            <input
-              type="file"
-              name="brand-photo"
-              className="form-control"
-              onChange={(e) => handleLogoPreview(e)}
-            />
-          </div>
+
           <div className="my-3">
             <button className="btn btn-primary" type="submit">
-              {loader ? "Creating...." : "Add new Brand"}
+              {loader ? "Creating...." : "Add new Tag"}
             </button>
-          </div>
-          <div className="my-3">
-            <img
-              style={{
-                height: "200px",
-                width: "200px",
-                objectFit: "cover",
-                borderRadius: "50%",
-              }}
-              src={logoPreview}
-              alt=""
-            />
           </div>
         </form>
       </ModalPopup>
-      <ModalPopup target="brandEditModal">
-        <form onSubmit={brandHandleUpdateSubmit}>
+      <ModalPopup target="tagEditModal">
+        <form onSubmit={tagHandleUpdateSubmit}>
           <div className="my-3">
             <label htmlFor="">Name</label>
             <input
               type="text"
               name="name"
-              value={brandEdit.name}
+              value={tagEdit.name}
               className="form-control"
-              onChange={hanldeBrandEditChange}
-            />
-          </div>
-
-          <div className="my-3">
-            <label htmlFor="">Photo</label>
-            <input
-              type="file"
-              name="brand-photo"
-              className="form-control"
-              onChange={(e) => hanldeUpdateFileChange(e)}
-            />
-          </div>
-
-          <div className="my-3">
-            <img
-              style={{
-                height: "100%",
-                width: "100%",
-              }}
-              src={logoUPPreview ? logoUPPreview : brandEdit.photo}
-              alt=""
+              onChange={hanldeTagEditChange}
             />
           </div>
           <div className="my-3">
             <button className="btn btn-primary" type="submit">
-              Update Brand
+              Update Tag
             </button>
           </div>
         </form>
@@ -297,21 +216,21 @@ const Brand = () => {
           <div className="card card-table">
             <button
               className="btn btn-primary "
-              data-target="#brandModalPopup"
+              data-target="#tagModalPopup"
               data-toggle="modal"
             >
-              Add New Brand
+              Add New Tag
             </button>
             <br />
             <br />
-            {brand?.length === 0 ? (
+            {tag?.length === 0 ? (
               <p>No data available.</p>
             ) : (
               <DataTable
                 className="shadow-sm wolmart-table"
-                title="All Brands Data"
+                title="All Tags Data"
                 columns={cols}
-                data={brand ? brand : []}
+                data={tag ? tag : []}
                 selectableRow
                 highlightOnHover
                 pagination
@@ -337,4 +256,4 @@ const Brand = () => {
   );
 };
 
-export default Brand;
+export default Tag;

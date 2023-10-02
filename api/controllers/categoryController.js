@@ -21,31 +21,29 @@ cloudinary.config({
 export const getAllCategory = asyncHandler(async (req, res) => {
   const categories = await Category.find().populate([
     {
-      path:"subCategory",
-      populate:{
-        path:"subCategory",
-        populate:{
-          path:"subCategory"
-        }
-      }
+      path: "subCategory",
+      populate: {
+        path: "subCategory",
+        populate: {
+          path: "subCategory",
+        },
+      },
     },
     {
-      path:"parentCategory",
-      populate:{
-        path:"parentCategory",
-        populate:{
-          path:"parentCategory"
-        }
-      }
-
-    }
+      path: "parentCategory",
+      populate: {
+        path: "parentCategory",
+        populate: {
+          path: "parentCategory",
+        },
+      },
+    },
   ]);
 
   if (categories.length === 0) {
     return res.status(404).json({ message: "User data not found" });
   }
-  res.status(200).json(categories);
-
+  res.status(200).json({ categories });
 });
 
 /**
@@ -63,7 +61,7 @@ export const getSingleCategory = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Category data not found" });
   }
 
-  res.status(200).json(category);
+  res.status(200).json({ category });
 });
 
 /**
@@ -74,7 +72,7 @@ export const getSingleCategory = asyncHandler(async (req, res) => {
  */
 export const createCategory = asyncHandler(async (req, res) => {
   // get values
-  const { name, parentCategory } = req.body;
+  const { name, parentCategory, icon } = req.body;
 
   // validations
   if (!name) {
@@ -91,6 +89,7 @@ export const createCategory = asyncHandler(async (req, res) => {
   // create new category
   const category = await Category.create({
     name,
+    icon,
     slug: createSlug(name),
     photo: result.secure_url,
     parentCategory: parentCategory ? parentCategory : null,
@@ -99,7 +98,6 @@ export const createCategory = asyncHandler(async (req, res) => {
     const parent = await Category.findByIdAndUpdate(parentCategory, {
       $push: { subCategory: category.id },
     });
-    
   }
 
   res.status(200).json({ category, message: "category created successfully" });
@@ -116,7 +114,7 @@ export const deleteCategory = asyncHandler(async (req, res) => {
 
   const category = await Category.findByIdAndDelete(id);
 
-  res.status(200).json(category);
+  res.status(200).json({ category });
 });
 
 /**
@@ -127,7 +125,7 @@ export const deleteCategory = asyncHandler(async (req, res) => {
  */
 export const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, icon } = req.body;
 
   if (!name) {
     return res.status(400).json({ message: "Category name is required" });
@@ -152,6 +150,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
 
     // Update the category's name and slug
     category.name = name;
+    category.icon = icon;
     category.slug = createSlug(name);
 
     // Save the updated category

@@ -22,8 +22,8 @@ const Sidebar = () => {
                 </li>
               )}
               {user?.role?.permissions?.includes("Products") && (
-                <li className="">
-                  <Link to="/users">
+                <li className={`${location.pathname === "/product" ? "active" : ""}`}>
+                  <Link to="/product">
                     <i className="fa fa-product-hunt" aria-hidden="true"></i>{" "}
                     <span>Products</span>
                   </Link>
@@ -38,25 +38,29 @@ const Sidebar = () => {
                 </li>
               )}
               {user?.role?.permissions?.includes("Tags") && (
-                <li className="">
-                  <Link to="/users">
+                <li
+                  className={`${location.pathname === "/tag" ? "active" : ""}`}
+                >
+                  <Link to="/tag">
                     <i className="fa fa-tags" aria-hidden="true"></i>{" "}
                     <span>Tags</span>
                   </Link>
                 </li>
               )}
               {user?.role?.permissions?.includes("Category") && (
-                <li className="">
-                  <Link to="/users">
+                <li className={`${location.pathname === "/category" ? "active" : ""}`}>
+                  <Link to="/category">
                     <i className="fa fa-bandcamp" aria-hidden="true"></i>{" "}
                     <span>Category</span>
                   </Link>
                 </li>
               )}
               {user?.role?.permissions?.includes("Brands") && (
-                <li className={`${
-                  location.pathname === "/brand" ? "active" : ""
-                }`}>
+                <li
+                  className={`${
+                    location.pathname === "/brand" ? "active" : ""
+                  }`}
+                >
                   <Link to="/brand">
                     <i className="fa fa-first-order" aria-hidden="true"></i>{" "}
                     <span>Brands</span>

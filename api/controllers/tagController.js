@@ -11,16 +11,15 @@ import { createSlug } from "../helper/slug.js";
  */
 
 export const getAllTag = asyncHandler(async (req, res) => {
-    
   const tags = await Tag.find();
 
   if (tags.length === 0) {
     return res.status(404).json({ message: "User data not found" });
   }
-  res.status(200).json(tags);
-//   if (tags.length > 0) {
-//     res.status(200).json({tags,message:"Tag Create Success"});
-//   }
+  res.status(200).json({ tags });
+  //   if (tags.length > 0) {
+  //     res.status(200).json({tags,message:"Tag Create Success"});
+  //   }
 });
 
 /**
@@ -38,7 +37,7 @@ export const getSingleTag = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Tag data not found" });
   }
 
-  res.status(200).json(tag);
+  res.status(200).json({ tag });
 });
 
 /**
@@ -48,6 +47,7 @@ export const getSingleTag = asyncHandler(async (req, res) => {
  * @access public
  */
 export const createTag = asyncHandler(async (req, res) => {
+  console.log(req.body);
   // get values
   const { name, permissions } = req.body;
 
@@ -82,7 +82,7 @@ export const deleteTag = asyncHandler(async (req, res) => {
 
   const tag = await Tag.findByIdAndDelete(id);
 
-  res.status(200).json(tag);
+  res.status(200).json({ tag });
 });
 
 /**
